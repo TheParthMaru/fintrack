@@ -1,0 +1,25 @@
+# Gradle specific
+.gradle/
+build/
+
+# Java specific
+*.class
+*.jar
+*.war
+*.ear
+*.swp
+
+# Eclipse specific
+*.project
+*.classpath
+/.settings/
+
+# IntelliJ IDEA specific
+/.idea
+*.iml
+
+# Mac OS
+.DS_Store
+
+# Logs
+*.log
