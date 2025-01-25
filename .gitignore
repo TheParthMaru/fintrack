@@ -1,0 +1,34 @@
+# Gradle
+.gradle/
+build/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Eclipse
+.project
+.classpath
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Environment files
+.env
+
+# Spring Boot specific
+*.jar
+*.war
+
+# macOS
+.DS_Store
+
+# IDE specific
+.vscode/
+
+# Gradle wrapper files (optional)
+gradle/wrapper/gradle-wrapper.jar
