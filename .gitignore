@@ -1,34 +1,37 @@
-# Gradle
-.gradle/
-build/
+# Node.js and frontend
+/node_modules
+/dist
+/build
+/.next
+/.nuxt
+/.vite
+/.idea
+/.vscode
 
-# IntelliJ IDEA
-.idea/
-*.iml
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Eclipse
-.project
-.classpath
+# IDEs and editors
+/.idea
+/.vscode
 
 # Operating System files
 .DS_Store
 Thumbs.db
 
-# Logs
-*.log
+# Gradle files
+.gradle/
+build/
 
-# Environment files
-.env
+# IntelliJ IDEA files
+.idea/
 
-# Spring Boot specific
-*.jar
-*.war
+# JetBrains
+*.iml
 
-# macOS
-.DS_Store
-
-# IDE specific
-.vscode/
-
-# Gradle wrapper files (optional)
-gradle/wrapper/gradle-wrapper.jar
+# Mac OS
+.AppleDouble
+.LSOverride
