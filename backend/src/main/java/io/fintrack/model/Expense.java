@@ -23,6 +23,9 @@ public class Expense {
     @Column(name = "place_of_purchase")
     private String placeOfPurchase;
 
+    @Column(name = "price")
+    private double price;
+
     @Column(name = "mode_of_payment")
     private String modeOfPayment;
 
@@ -75,6 +78,14 @@ public class Expense {
 
     public void setPlaceOfPurchase(String placeOfPurchase) {
         this.placeOfPurchase = placeOfPurchase;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public double getPrice() {
+        return this.price;
     }
 
     public String getModeOfPayment() {
