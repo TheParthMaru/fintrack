@@ -2,121 +2,180 @@ package io.fintrack.model;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "expenses")
+@Table(name = "expense")
 public class Expense {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    @Column(name = "purchase_date", nullable = false)
-    private LocalDate purchaseDate;
+    @Column(name = "txn_date", nullable = false)
+    private LocalDate txnDate;
 
-    @Column(name = "product_name", nullable = false)
-    private String productName;
+    @Column(nullable = false, precision = 12, scale = 2)
+    private BigDecimal amount;
 
-    @Column(name = "product_category")
-    private String productCategory;
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String item;
 
-    @Column(name = "place_of_purchase")
-    private String placeOfPurchase;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category; // nullable in DB → can be null in Java too
 
-    @Column(name = "price")
-    private double price;
+    @ManyToOne
+    @JoinColumn(name = "merchant_id")
+    private Merchant merchant; // nullable
 
-    @Column(name = "mode_of_payment")
-    private String modeOfPayment;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_method", nullable = false, length = 30)
+    private PaymentMethod paymentMethod;
 
-    @Column(name = "card_name")
-    private String cardName;
+    @Column(name = "bank")
+    private String bank;
 
-    @Column(name = "paid_by")
+    @Column(name = "paid_by", nullable = false, length = 50)
     private String paidBy;
 
-    @Column(name = "additional_notes")
-    private String additionalNotes;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "entry_type", nullable = false, length = 10)
+    private EntryType entryType;
 
-    // Getters and Setters
+    @Column(columnDefinition = "TEXT")
+    private String notes;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
+
+    public Expense() {
+        // required by JPA
+    }
+
+    public Expense(LocalDate txnDate,
+            BigDecimal amount,
+            String item,
+            Category category,
+            Merchant merchant,
+            PaymentMethod paymentMethod,
+            String paidBy,
+            EntryType entryType,
+            String notes) {
+        this.txnDate = txnDate;
+        this.amount = amount;
+        this.item = item;
+        this.category = category;
+        this.merchant = merchant;
+        this.paymentMethod = paymentMethod;
+        this.paidBy = paidBy;
+        this.entryType = entryType;
+        this.notes = notes;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+    }
+
+    // Getters and setters
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public LocalDate getTxnDate() {
+        return txnDate;
     }
 
-    public LocalDate getPurchaseDate() {
-        return purchaseDate;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public void setPurchaseDate(LocalDate purchaseDate) {
-        this.purchaseDate = purchaseDate;
+    public String getItem() {
+        return item;
     }
 
-    public String getProductName() {
-        return productName;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName;
+    public Merchant getMerchant() {
+        return merchant;
     }
 
-    public String getProductCategory() {
-        return productCategory;
+    public PaymentMethod getPaymentMethod() {
+        return paymentMethod;
     }
 
-    public void setProductCategory(String productCategory) {
-        this.productCategory = productCategory;
+    public String getBank() {
+        return bank;
     }
 
-    public String getPlaceOfPurchase() {
-        return placeOfPurchase;
-    }
-
-    public void setPlaceOfPurchase(String placeOfPurchase) {
-        this.placeOfPurchase = placeOfPurchase;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-    public double getPrice() {
-        return this.price;
-    }
-
-    public String getModeOfPayment() {
-        return modeOfPayment;
-    }
-
-    public void setModeOfPayment(String modeOfPayment) {
-        this.modeOfPayment = modeOfPayment;
-    }
-
-    public String getCardName() {
-        return cardName;
-    }
-
-    public void setCardName(String cardName) {
-        this.cardName = cardName;
+    public void setBank(String bank) {
+        this.bank = bank;
     }
 
     public String getPaidBy() {
         return paidBy;
     }
 
+    public EntryType getEntryType() {
+        return entryType;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setTxnDate(LocalDate txnDate) {
+        this.txnDate = txnDate;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public void setItem(String item) {
+        this.item = item;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public void setMerchant(Merchant merchant) {
+        this.merchant = merchant;
+    }
+
+    public void setPaymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
     public void setPaidBy(String paidBy) {
         this.paidBy = paidBy;
     }
 
-    public String getAdditionalNotes() {
-        return additionalNotes;
+    public void setEntryType(EntryType entryType) {
+        this.entryType = entryType;
     }
 
-    public void setAdditionalNotes(String additionalNotes) {
-        this.additionalNotes = additionalNotes;
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }
