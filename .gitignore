@@ -35,3 +35,9 @@ build/
 # Mac OS
 .AppleDouble
 .LSOverride
+
+# Project-specific
+*.png
+*.pdf
+backend/bin/
+backend/.vscode/
