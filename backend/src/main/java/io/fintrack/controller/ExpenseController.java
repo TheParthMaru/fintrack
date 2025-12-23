@@ -1,40 +1,68 @@
 package io.fintrack.controller;
 
+import io.fintrack.dto.CreateExpenseRequest;
+import io.fintrack.dto.MonthlyAnalyticsResponse;
 import io.fintrack.model.Expense;
 import io.fintrack.service.ExpenseService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/expenses")
 public class ExpenseController {
-    @Autowired
-    private ExpenseService expenseService;
 
-    // Get all expenses
+    private final ExpenseService expenseService;
+
+    public ExpenseController(ExpenseService expenseService) {
+        this.expenseService = expenseService;
+    }
+
+    @PostMapping
+    public ResponseEntity<Expense> createExpense(@RequestBody CreateExpenseRequest request) {
+        Expense saved = expenseService.createExpense(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    }
+
+    // 1) GET /api/v1/expenses → all expenses
     @GetMapping
     public List<Expense> getAllExpenses() {
         return expenseService.getAllExpenses();
     }
 
-    // Get a single expense by ID
+    // 2) GET /api/v1/expenses/{id} → single expense
     @GetMapping("/{id}")
-    public Optional<Expense> getExpenseById(@PathVariable Long id) {
-        return expenseService.getExpenseById(id);
+    public ResponseEntity<Expense> getExpenseById(@PathVariable Long id) {
+        try {
+            Expense expense = expenseService.getExpenseById(id);
+            return ResponseEntity.ok(expense);
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    // Add a new expense
-    @PostMapping
-    public Expense createExpense(@RequestBody Expense expense) {
-        return expenseService.saveExpense(expense);
+    // 3) GET /api/v1/expenses/search?from=2025-11-01&to=2025-11-30
+    @GetMapping("/search")
+    public ResponseEntity<Page<Expense>> getExpensesBetween(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<Expense> result = expenseService.getExpensesBetween(from, to, page, size);
+        return ResponseEntity.ok(result);
     }
 
-    // Delete an expense
-    @DeleteMapping("/{id}")
-    public void deleteExpense(@PathVariable Long id) {
-        expenseService.deleteExpense(id);
+    // 4) GET /api/v1/expenses/analytics/monthly → monthly analytics for current
+    // month
+    @GetMapping("/analytics/monthly")
+    public ResponseEntity<MonthlyAnalyticsResponse> getMonthlyAnalytics() {
+        MonthlyAnalyticsResponse analytics = expenseService.getMonthlyAnalytics();
+        return ResponseEntity.ok(analytics);
     }
 }
